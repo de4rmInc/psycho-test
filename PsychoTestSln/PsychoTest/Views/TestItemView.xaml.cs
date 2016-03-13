@@ -12,23 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GalaSoft.MvvmLight.Messaging;
-using PsychoTest.Messages;
-using PsychoTest.ViewModels;
 
-namespace PsychoTest
+namespace PsychoTest.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for TestItemView.xaml
     /// </summary>
-    public partial class MainWindow
+    public partial class TestItemView : UserControl
     {
-        public MainWindow()
+        public TestItemView()
         {
             InitializeComponent();
-            var mainViewModel = new MainWindowViewModel();
-
-            DataContext = mainViewModel;
         }
     }
 }
