@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Documents;
 using GalaSoft.MvvmLight;
 using PsychoTest.Messages;
+using PsychoTest.Models;
 
 namespace PsychoTest.ViewModels
 {
     public class TestItemViewModel : ViewModelBase
     {
-        private string _question;
+        private readonly TestQuestion _question;
         private ObservableCollection<TestAnswerViewModel> _answers;
 
-        public TestItemViewModel(string question)
+        public TestItemViewModel(TestQuestion question)
         {
             _question = question;
             MessengerInstance.Register<AnsweredMessage>(this, Answered);
@@ -26,11 +26,17 @@ namespace PsychoTest.ViewModels
             private set { Set(ref _answers, value); }
         }
 
-        public string Question
+        public string QuestionText
+        {
+            get { return _question.Question; }
+        }
+
+        public TestQuestion Question
         {
             get { return _question; }
-            set { Set(ref _question, value); }
         }
+
+        public ParticipantViewModel Answer { get { return Answers.First(model => model.Selected).Participant; } }
 
         public void LoadAnswers(List<TestAnswerViewModel> answers)
         {
@@ -39,8 +45,23 @@ namespace PsychoTest.ViewModels
 
         private void Answered(AnsweredMessage answeredMessage)
         {
-            GotAnswer = _answers.Any(model => model.Selected);
-            MessengerInstance.Send(new GotAnswersMessage { Anwsered = GotAnswer });
+            if (_answers != null)
+            {
+                GotAnswer = _answers.Any(model => model.Selected);
+                MessengerInstance.Send(new GotAnswersMessage {Anwsered = GotAnswer});
+            }
+        }
+
+        public void CleanTest()
+        {
+            GotAnswer = false;
+            Answers = null;
+        }
+
+        public void ReloadTest(List<TestAnswerViewModel> answers)
+        {
+            CleanTest();
+            LoadAnswers(answers);
         }
     }
 
@@ -48,13 +69,21 @@ namespace PsychoTest.ViewModels
     {
         private bool _selected;
 
-        public string Answer { get; set; }
+        public TestAnswerViewModel(ParticipantViewModel participant)
+        {
+            Participant = participant;
+        }
+
+        public string Answer => Participant.FullName;
+
+        public ParticipantViewModel Participant { get; private set; }
 
         public bool Selected
         {
             get { return _selected; }
             set
             {
+                Participant.Choosen = value;
                 Set(ref _selected, value, true);
                 MessengerInstance.Send(new AnsweredMessage {Anwsered = value });
             }

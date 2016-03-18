@@ -7,7 +7,8 @@
         xmlns:viewModels="clr-namespace:PsychoTest.ViewModels"
         xmlns:views="clr-namespace:PsychoTest.Views"
         mc:Ignorable="d"
-        Title="PsychoTest" Height="350" Width="525"
+        Title="Психологический тест" Height="350" Width="525"
+        WindowStartupLocation="CenterScreen"
         d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}">
     <mahControls:MetroWindow.Resources>
         <ResourceDictionary Source="Resources/Generic.xaml"/>

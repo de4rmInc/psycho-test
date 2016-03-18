@@ -84,7 +84,12 @@
     <Compile Include="Messages\AnsweredMessage.cs" />
     <Compile Include="Messages\GotAnswersMessage.cs" />
     <Compile Include="Messages\ShowResultsMessage.cs" />
+    <Compile Include="ViewModels\MappingHelper.cs" />
+    <Compile Include="Models\Participant.cs" />
+    <Compile Include="Models\TestAnswer.cs" />
+    <Compile Include="Models\TestAnswers.cs" />
     <Compile Include="Models\TestInformation.cs" />
+    <Compile Include="Models\TestQuestion.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\ParticipantViewModel.cs" />
     <Compile Include="ViewModels\TabViewModelBase.cs" />

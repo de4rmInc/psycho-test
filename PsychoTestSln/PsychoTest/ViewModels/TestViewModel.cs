@@ -1,28 +1,43 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using GalaSoft.MvvmLight.CommandWpf;
+using PsychoTest.Messages;
+using PsychoTest.Models;
 
 namespace PsychoTest.ViewModels
 {
     public class TestViewModel : TabViewModelBase
     {
-        private const int RegistrationPagesCount = 2;
+        private const int REGISTRATION_PAGES_COUNT = 2;
+        private const int MIN_PARTICIPANTS_COUNT = 5;
         private int _registrationPageNo = 1;
+        private int _testRound = 0;
 
         private List<ParticipantViewModel> _participants;
         private Queue<TestItemViewModel> _testItems;
+        private List<TestItemViewModel> _answeredTestItems;
+        private TestAnswers _testAnswers;
 
         private RelayCommand<object> _nextTestItemCommand;
         private TestItemViewModel _currentTestItem;
         private string _testName;
         private int? _participantsCount;
 
-        public TestViewModel(List<string> questions)
+        public TestViewModel(List<TestQuestion> questions)
         {
             _testItems = new Queue<TestItemViewModel>(questions.Select(question => new TestItemViewModel(question)));
+            _answeredTestItems = new List<TestItemViewModel>();
+            _testAnswers = new TestAnswers();
             RegistrationButtonName = "Далее";
             TestButtonName = "Продолжить";
             IsRegistrationState = true;
+
+            MessengerInstance.Register<GotAnswersMessage>(this, message => NextTestItemCommand.RaiseCanExecuteChanged());
+        }
+
+        public TestAnswers TestAnswers
+        {
+            get { return _testAnswers; }
         }
 
         public string TestName
@@ -67,6 +82,12 @@ namespace PsychoTest.ViewModels
             set { Set(ref _currentTestItem, value); }
         }
         
+        public ParticipantViewModel CurrentParticipant
+        {
+            get { return _currentParticipant; }
+            set { Set(ref _currentParticipant, value); }
+        }
+        
         public RelayCommand<object> NextTestItemCommand
         {
             get
@@ -81,6 +102,7 @@ namespace PsychoTest.ViewModels
         private string _testButtonName;
         private bool _isRegistrationState;
         private bool _isRegistrationFinishing;
+        private ParticipantViewModel _currentParticipant;
 
         public RelayCommand<object> NextRegistrationPageCommand
         {
@@ -101,7 +123,7 @@ namespace PsychoTest.ViewModels
         {
             if (_registrationPageNo == 1)
             {
-                return ParticipantsCount.HasValue && ParticipantsCount > 1;
+                return ParticipantsCount.HasValue && ParticipantsCount >= MIN_PARTICIPANTS_COUNT;
             }
             else
             {
@@ -122,21 +144,81 @@ namespace PsychoTest.ViewModels
                 Participants = participants;
                 IsRegistrationFinishing = true;
             }
-            else if (_registrationPageNo == 2)
+            else if (_registrationPageNo == REGISTRATION_PAGES_COUNT)
             {
                 IsRegistrationState = false;
+                CurrentParticipant = Participants[_testRound];
+                NextTestItem(null);
             }
             _registrationPageNo++;
         }
 
         private bool CanNextTestItem(object o)
         {
-            return CurrentTestItem == null || CurrentTestItem.GotAnswer;
+            return (CurrentTestItem == null || CurrentTestItem.GotAnswer) && _testItems.Any();
         }
 
         private void NextTestItem(object o)
         {
-            
+            if (CurrentTestItem != null && CurrentTestItem.GotAnswer)
+            {
+                _answeredTestItems.Add(CurrentTestItem);
+                _testItems.Dequeue();
+            }
+
+            if (_testItems.Any())
+            {
+                NextTestItemInternal();
+            }
+            else if (TestAnswers.Count != ParticipantsCount)
+            {
+                TestAnswers.AddAnswers(
+                    CurrentParticipant.MapTo(new Participant()),
+                    _answeredTestItems
+                        .Select(model => new TestAnswer(model.Question, model.Answer.MapTo(new Participant())))
+                        .ToList());
+
+                _answeredTestItems.ForEach(test => test.CleanTest());
+                _testItems = new Queue<TestItemViewModel>(_answeredTestItems);
+                _answeredTestItems = new List<TestItemViewModel>();
+                _participants.ForEach(model => model.Choosen = false);
+
+                TestButtonName = "Продолжить";
+                CurrentTestItem = null;
+
+                if (_testRound < Participants.Count - 1)
+                {
+                    CurrentParticipant = Participants[++_testRound];
+                    NextTestItemInternal();
+                }
+                else
+                {
+                    MessengerInstance.Send(new ShowResultsMessage(TestAnswers));
+                }
+            }
+            else
+            {
+                MessengerInstance.Send(new ShowResultsMessage(TestAnswers));
+            }
+        }
+
+        private void NextTestItemInternal()
+        {
+            CurrentTestItem = _testItems.Peek();
+            CurrentTestItem.LoadAnswers(
+                Participants
+                    .Where(participant => !participant.Choosen && participant.Id != CurrentParticipant.Id)
+                    .Select(participant => new TestAnswerViewModel(participant))
+                    .ToList());
+
+            if (TestAnswers.Count == ParticipantsCount - 1 && _testItems.Count == 1)
+            {
+                TestButtonName = "Завершить тест";
+            }
+            else if (_testItems.Count == 1)
+            {
+                TestButtonName = "Завершить и перейти к следующему участнику";
+            }
         }
     }
 }

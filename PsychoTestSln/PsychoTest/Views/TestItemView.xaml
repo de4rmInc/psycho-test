@@ -11,18 +11,18 @@
     <UserControl.Resources>
         <ResourceDictionary Source="../Resources/Generic.xaml"/>
     </UserControl.Resources>
-    <Grid>
         <GroupBox x:Name="TestItemBox"
-                  Header="{Binding Question}">
-            <ListBox SelectionMode="Single"
-                     ItemsSource="{Binding Answers}">
-                <ListBox.ItemTemplate>
+                  Header="{Binding QuestionText}">
+            <ItemsControl ItemsSource="{Binding Answers}">
+                <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="viewModels:TestAnswerViewModel">
                         <RadioButton IsChecked="{Binding Selected}" 
-                                     Content="{Binding Answer}"/>
+                                     Margin="4"
+                                     Content="{Binding Answer}"
+                                     GroupName="TestItem"
+                                     HorizontalContentAlignment="Stretch"/>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </GroupBox>
-    </Grid>
 </UserControl>

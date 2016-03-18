@@ -11,10 +11,25 @@ namespace PsychoTest.ViewModels
     {
         private string _firstName;
         private string _secondName;
+        private bool _choosen;
+
+        public ParticipantViewModel()
+        {
+            Id = Guid.NewGuid();
+        }
+
+        public Guid Id { get; set; }
 
         public string FirstName
         {
-            get { return _firstName; }
+            get
+            {
+#if DEBUG
+                return "Имя_" + Id.ToString().Substring(0, 6);
+#else
+                return _firstName;
+#endif
+            }
             set
             {
                 Set(ref _firstName, value);
@@ -24,7 +39,14 @@ namespace PsychoTest.ViewModels
 
         public string SecondName
         {
-            get { return _secondName; }
+            get
+            {
+#if DEBUG
+                return "Фамилия_" + Id.ToString().Substring(0, 4);
+#else
+                return _secondName;
+#endif
+            }
             set
             {
                 Set(ref _secondName, value);
@@ -34,7 +56,19 @@ namespace PsychoTest.ViewModels
 
         public string FullName => $"{SecondName} {FirstName}";
 
-        public bool NotEmpty => !string.IsNullOrEmpty(FirstName)
-                                && !string.IsNullOrEmpty(SecondName);
+        public bool NotEmpty
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(FirstName)
+                       && !string.IsNullOrEmpty(SecondName);
+            }
+        }
+
+        public bool Choosen
+        {
+            get { return _choosen; }
+            set { Set(ref _choosen, value); }
+        }
     }
 }

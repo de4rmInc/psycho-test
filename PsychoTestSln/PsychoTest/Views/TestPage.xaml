@@ -45,14 +45,14 @@
                     <TextBox x:Name="TestNameTextBox"
                              Grid.Row="0"
                              Grid.Column="1"
-                             Text="{Binding TestName}" />
+                             Text="{Binding TestName, UpdateSourceTrigger=PropertyChanged}" />
                     <Label Content="Количество участников:"
                            Grid.Row="1"
                            Grid.Column="0" />
                     <TextBox x:Name="ParticipantsCountTextBox"
                              Grid.Row="1"
                              Grid.Column="1"
-                             Text="{Binding ParticipantsCount}" />
+                             Text="{Binding ParticipantsCount, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
                 <Grid x:Name="RegistryPageTwo"
                       Visibility="{Binding IsRegistrationFinishing, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -60,38 +60,60 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <ListView ItemsSource="{Binding Participants}"> 
-                        <ListView.ItemTemplate>
+                    <ItemsControl ItemsSource="{Binding Participants}">
+                        <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="viewModels:ParticipantViewModel">
-                                <StackPanel Orientation="Horizontal">
-                                    <Label Content="Имя участника:" />
-                                    <TextBox Text="{Binding FirstName}" />
-                                    <Label Content="Фамалия:" />
-                                    <TextBox Text="{Binding SecondName}" />
-                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="1*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label Grid.Column="0" 
+                                           Content="Имя участника:" />
+                                    <TextBox Grid.Column="1" 
+                                             Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}" />
+                                    <Label Grid.Column="2" 
+                                           Content="Фамалия:" />
+                                    <TextBox Grid.Column="3" 
+                                             Text="{Binding SecondName, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </Grid>
             </Grid>
             <Grid x:Name="TestGrid"
                   Grid.Row="1"
                   Visibility="{Binding IsRegistrationState, Converter={StaticResource NotBooleanToVisibilityConverter}}">
-                <views:TestItemView DataContext="{Binding CurrentTestItem}" />
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Тестируемый:"
+                           FontSize="18" />
+                    <TextBlock Margin="5"
+                               FontSize="18"
+                               Text="{Binding CurrentParticipant.FullName}" />
+                </StackPanel>
+                <views:TestItemView Grid.Row="1"
+                                    DataContext="{Binding CurrentTestItem}" />
             </Grid>
         </Grid>
         <StackPanel x:Name="NavButtonsStackPanel"
-                    Grid.Row="2"
+                    Grid.Row="1"
                     Margin="10"
                     VerticalAlignment="Bottom">
             <Button x:Name="RegistrationNextButton"
-                    Width="150"
+                    MinWidth="150"
                     HorizontalAlignment="Right"
                     Visibility="{Binding IsRegistrationState, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Content="{Binding RegistrationButtonName, FallbackValue=Далее}"
                     Command="{Binding NextRegistrationPageCommand}" />
             <Button x:Name="TestNextButton"
-                    Width="150"
+                    MinWidth="150"
                     HorizontalAlignment="Right"
                     Visibility="{Binding IsRegistrationState, Converter={StaticResource NotBooleanToVisibilityConverter}}"
                     Content="{Binding TestButtonName, FallbackValue=Далее}"

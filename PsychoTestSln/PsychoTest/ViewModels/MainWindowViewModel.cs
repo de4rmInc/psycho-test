@@ -17,6 +17,8 @@ namespace PsychoTest.ViewModels
 
         public MainWindowViewModel()
         {
+            TestTab = new TestViewModel(TestInformation.Questions);
+            ResultsTab = new TestResultViewModel();
             Messenger.Default.Register<ShowResultsMessage>(this, ShowResults);
             Selected = true;
         }
@@ -74,7 +76,9 @@ namespace PsychoTest.ViewModels
 
         private void ShowResults(ShowResultsMessage resultsMessage)
         {
-
+            ResultsTab = new TestResultViewModel(resultsMessage.TestAnswers);
+            TestTab = new TestViewModel(TestInformation.Questions);
+            SelectTab(MainWindowTab.ResultsPage);
         }
 
         private void SelectTab(MainWindowTab tab)
