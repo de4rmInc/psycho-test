@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace PsychoTest.Models
 {
+    [Serializable]
     public class Participant : IEquatable<Participant>
     {
         public Guid Id { get; set; }
@@ -17,7 +18,8 @@ namespace PsychoTest.Models
         public string FullName { get; set; }
 
         public bool NotEmpty => !string.IsNullOrEmpty(FirstName)
-                                && !string.IsNullOrEmpty(SecondName);
+                                && !string.IsNullOrEmpty(SecondName)
+                                && !string.IsNullOrEmpty(FullName);
 
         public bool Equals(Participant other)
         {
@@ -41,6 +43,7 @@ namespace PsychoTest.Models
 
         public static IEqualityComparer<Participant> IdComparer { get; } = new IdEqualityComparer();
 
+        [Serializable]
         private sealed class IdEqualityComparer : IEqualityComparer<Participant>
         {
             public bool Equals(Participant x, Participant y)

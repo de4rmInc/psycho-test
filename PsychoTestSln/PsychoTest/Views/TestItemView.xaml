@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:PsychoTest.Views"
              xmlns:viewModels="clr-namespace:PsychoTest.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -14,7 +13,7 @@
         <GroupBox x:Name="TestItemBox"
                   Header="{Binding QuestionText}">
             <ItemsControl ItemsSource="{Binding Answers}">
-                <ItemsControl.ItemTemplate>
+            <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="viewModels:TestAnswerViewModel">
                         <RadioButton IsChecked="{Binding Selected}" 
                                      Margin="4"

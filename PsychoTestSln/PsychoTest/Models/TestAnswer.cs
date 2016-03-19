@@ -6,11 +6,21 @@ using System.Threading.Tasks;
 
 namespace PsychoTest.Models
 {
+    [Serializable]
     public class TestAnswer
     {
-        public TestAnswer(TestQuestion question, Participant answer)
+        public TestQuestion Question { get; set; }
+        public Participant Answer { get; set; }
+
+        public TestAnswer()
         {
             
+        }
+
+        public TestAnswer(TestQuestion question, Participant answer)
+        {
+            Question = question;
+            Answer = answer;
         }
     }
 }

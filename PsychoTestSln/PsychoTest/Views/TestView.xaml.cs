@@ -3,11 +3,11 @@
 namespace PsychoTest.Views
 {
     /// <summary>
-    /// Interaction logic for TestPage.xaml
+    /// Interaction logic for TestView.xaml
     /// </summary>
-    public partial class TestPage : UserControl
+    public partial class TestView : UserControl
     {
-        public TestPage()
+        public TestView()
         {
             InitializeComponent();
         }

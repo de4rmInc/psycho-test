@@ -9,7 +9,7 @@ namespace PsychoTest.ViewModels
     public class TestViewModel : TabViewModelBase
     {
         private const int REGISTRATION_PAGES_COUNT = 2;
-        private const int MIN_PARTICIPANTS_COUNT = 5;
+        private const int MIN_PARTICIPANTS_COUNT = 3;
         private int _registrationPageNo = 1;
         private int _testRound = 0;
 
@@ -43,7 +43,11 @@ namespace PsychoTest.ViewModels
         public string TestName
         {
             get { return _testName; }
-            set { Set(ref _testName, value); }
+            set
+            {
+                TestAnswers.TestName = value;
+                Set(ref _testName, value);
+            }
         }
 
         public string RegistrationButtonName

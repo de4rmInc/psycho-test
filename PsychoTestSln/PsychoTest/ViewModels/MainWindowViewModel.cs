@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Windows;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Win32;
+using PsychoTest.Common;
 using PsychoTest.Messages;
 using PsychoTest.Models;
 
@@ -18,7 +21,7 @@ namespace PsychoTest.ViewModels
         public MainWindowViewModel()
         {
             TestTab = new TestViewModel(TestInformation.Questions);
-            ResultsTab = new TestResultViewModel();
+            ResultsTab = new TestResultViewModel(new TestAnswers());
             Messenger.Default.Register<ShowResultsMessage>(this, ShowResults);
             Selected = true;
         }
@@ -44,24 +47,46 @@ namespace PsychoTest.ViewModels
             }
         }
 
-        public RelayCommand<object> LoadTestResutlsCommand
+        public RelayCommand<object> LoadTestResultsCommand
         {
             get
             {
                 return _loadTestResutlsCommand ??
                        (_loadTestResutlsCommand =
-                           new RelayCommand<object>(LoadTestResutls, CanLoadTestResutls));
+                           new RelayCommand<object>(LoadTestResults, CanLoadTestResults));
             }
         }
 
-        private bool CanLoadTestResutls(object o)
+        private bool CanLoadTestResults(object o)
         {
             return true;
         }
 
-        private void LoadTestResutls(object o)
+        private void LoadTestResults(object o)
         {
-            SelectTab(MainWindowTab.ResultsPage);
+            var openDialog = new OpenFileDialog()
+            {
+                Title = "Открыть файл с результатами теста",
+                Filter = Constants.TEST_EXT_FILTER,
+                CheckFileExists = true,
+                Multiselect = false,
+            };
+
+            if (openDialog.ShowDialog(Application.Current.MainWindow) == true)
+            {
+                try
+                {
+                    using (var stream = openDialog.OpenFile())
+                    {
+                        ResultsTab = new TestResultViewModel(SerializationHelper.Deserialize<TestAnswers>(stream));
+                    }
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+                SelectTab(MainWindowTab.ResultsPage);
+            }
         }
 
         private bool CanCreateNewTest(object o)
