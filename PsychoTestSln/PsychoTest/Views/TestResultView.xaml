@@ -8,7 +8,11 @@
              d:DesignHeight="250" d:DesignWidth="600"
              d:DataContext="{d:DesignInstance viewModels:TestResultViewModel}">
     <UserControl.Resources>
-        <ResourceDictionary Source="../Resources/Generic.xaml"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -48,9 +52,11 @@
                        HorizontalAlignment="Center"
                        Text="По личностным качествам" 
                        TextWrapping="Wrap"/>
-            <DataGrid Grid.Row="1" Grid.Column="0"
+            <DataGrid x:Name="ProDataGrid"
+                      Grid.Row="1" Grid.Column="0"
                       Margin="10"
-                      ItemsSource="{Binding ProfQualities}" SelectionMode="Single" 
+                      ItemsSource="{Binding ProfQualities}"
+                      SelectionMode="Single" 
                       CanUserResizeColumns="True" CanUserResizeRows="False" 
                       CanUserAddRows="False" CanUserDeleteRows="False"
                       AutoGenerateColumns="False">
@@ -63,9 +69,11 @@
                                         Binding="{Binding MutualSum, Mode=OneTime}"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid Grid.Row="1" Grid.Column="1"
+            <DataGrid x:Name="PersonalDataGrid"
+                      Grid.Row="1" Grid.Column="1"
                       Margin="10"
-                      ItemsSource="{Binding PersonalQualities}" SelectionMode="Single" 
+                      ItemsSource="{Binding PersonalQualities}"
+                      SelectionMode="Single" 
                       CanUserResizeColumns="True" CanUserResizeRows="False" 
                       CanUserAddRows="False" CanUserDeleteRows="False"
                       AutoGenerateColumns="False">

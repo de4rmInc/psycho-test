@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Win32;
@@ -43,27 +45,31 @@ namespace PsychoTest.ViewModels
         private List<TestResultItem> CalculateProQualities()
         {
             var proQualities = _testProcessor.CalcProQualities(_testAnswers);
+#if !DEBUG
             return proQualities;
-
+#else
             return new List<TestResultItem>()
             {
                 new TestResultItem(new Participant() {FirstName = "alex 1"}) {MutualSum = 2, TotalSum = 3},
                 new TestResultItem(new Participant() {FirstName = "alex 2"}) { MutualSum = 4, TotalSum = 1},
                 new TestResultItem(new Participant() {FirstName = "alex 3"}) { MutualSum = 1, TotalSum = 2},
             };
+#endif
         }
 
         private List<TestResultItem> CalculatePersonalQualities()
         {
             var personalQualities = _testProcessor.CalcPersonalQualities(_testAnswers);
+#if !DEBUG
             return personalQualities;
-
+#else
             return new List<TestResultItem>()
             {
                 new TestResultItem(new Participant() {FirstName = "hex 2"}) {MutualSum = 2, TotalSum = 3},
                 new TestResultItem(new Participant() {FirstName = "hex 1"}) {MutualSum = 1, TotalSum = 2},
                 new TestResultItem(new Participant() {FirstName = "hex 3"}) {MutualSum = 3, TotalSum = 4},
             };
+#endif
         }
 
 

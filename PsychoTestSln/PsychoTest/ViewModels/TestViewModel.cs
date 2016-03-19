@@ -9,7 +9,11 @@ namespace PsychoTest.ViewModels
     public class TestViewModel : TabViewModelBase
     {
         private const int REGISTRATION_PAGES_COUNT = 2;
+#if DEBUG
         private const int MIN_PARTICIPANTS_COUNT = 3;
+#else
+        private const int MIN_PARTICIPANTS_COUNT = 7;
+#endif
         private int _registrationPageNo = 1;
         private int _testRound = 0;
 
