@@ -12,7 +12,7 @@ namespace PsychoTest.ViewModels
 #if DEBUG
         private const int MIN_PARTICIPANTS_COUNT = 3;
 #else
-        private const int MIN_PARTICIPANTS_COUNT = 7;
+        private const int MIN_PARTICIPANTS_COUNT = 5;
 #endif
         private int _registrationPageNo = 1;
         private int _testRound = 0;
@@ -183,13 +183,15 @@ namespace PsychoTest.ViewModels
                 TestAnswers.AddAnswers(
                     CurrentParticipant.MapTo(new Participant()),
                     _answeredTestItems
-                        .Select(model => new TestAnswer(model.Question, model.Answer.MapTo(new Participant())))
+                        .Select(
+                            model =>
+                                new TestAnswer(model.Question,
+                                    model.SelectedAnswers.Select(answer => answer.MapTo(new Participant())).ToList()))
                         .ToList());
 
                 _answeredTestItems.ForEach(test => test.CleanTest());
                 _testItems = new Queue<TestItemViewModel>(_answeredTestItems);
                 _answeredTestItems = new List<TestItemViewModel>();
-                _participants.ForEach(model => model.Choosen = false);
 
                 TestButtonName = "Продолжить";
                 CurrentTestItem = null;
@@ -215,7 +217,7 @@ namespace PsychoTest.ViewModels
             CurrentTestItem = _testItems.Peek();
             CurrentTestItem.LoadAnswers(
                 Participants
-                    .Where(participant => !participant.Choosen && participant.Id != CurrentParticipant.Id)
+                    .Where(participant => participant.Id != CurrentParticipant.Id)
                     .Select(participant => new TestAnswerViewModel(participant))
                     .ToList());
 

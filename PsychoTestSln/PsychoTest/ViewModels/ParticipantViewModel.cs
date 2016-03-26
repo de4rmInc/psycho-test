@@ -64,11 +64,5 @@ namespace PsychoTest.ViewModels
                        && !string.IsNullOrEmpty(SecondName);
             }
         }
-
-        public bool Choosen
-        {
-            get { return _choosen; }
-            set { Set(ref _choosen, value); }
-        }
     }
 }

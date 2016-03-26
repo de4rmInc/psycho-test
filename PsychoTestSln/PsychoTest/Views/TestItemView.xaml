@@ -15,10 +15,9 @@
             <ItemsControl ItemsSource="{Binding Answers}">
             <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="viewModels:TestAnswerViewModel">
-                        <RadioButton IsChecked="{Binding Selected}" 
+                        <CheckBox IsChecked="{Binding Selected}" 
                                      Margin="4"
                                      Content="{Binding Answer}"
-                                     GroupName="TestItem"
                                      HorizontalContentAlignment="Stretch"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

@@ -10,17 +10,17 @@ namespace PsychoTest.Models
     public class TestAnswer
     {
         public TestQuestion Question { get; set; }
-        public Participant Answer { get; set; }
+        public List<Participant> Answers { get; set; }
 
         public TestAnswer()
         {
             
         }
 
-        public TestAnswer(TestQuestion question, Participant answer)
+        public TestAnswer(TestQuestion question, List<Participant> answers)
         {
             Question = question;
-            Answer = answer;
+            Answers = answers;
         }
     }
 }

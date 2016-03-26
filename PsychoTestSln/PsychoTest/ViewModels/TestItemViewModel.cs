@@ -9,6 +9,8 @@ namespace PsychoTest.ViewModels
 {
     public class TestItemViewModel : ViewModelBase
     {
+        public const int ShouldSelectCount = 3;
+
         private readonly TestQuestion _question;
         private ObservableCollection<TestAnswerViewModel> _answers;
 
@@ -36,7 +38,15 @@ namespace PsychoTest.ViewModels
             get { return _question; }
         }
 
-        public ParticipantViewModel Answer { get { return Answers.First(model => model.Selected).Participant; } }
+        public IEnumerable<ParticipantViewModel> SelectedAnswers
+        {
+            get
+            {
+                return Answers
+                    .Where(model => model.Selected)
+                    .Select(model => model.Participant);
+            }
+        }
 
         public void LoadAnswers(List<TestAnswerViewModel> answers)
         {
@@ -47,7 +57,7 @@ namespace PsychoTest.ViewModels
         {
             if (_answers != null)
             {
-                GotAnswer = _answers.Any(model => model.Selected);
+                GotAnswer = _answers.Count(model => model.Selected) == ShouldSelectCount;
                 MessengerInstance.Send(new GotAnswersMessage {Anwsered = GotAnswer});
             }
         }
@@ -83,7 +93,6 @@ namespace PsychoTest.ViewModels
             get { return _selected; }
             set
             {
-                Participant.Choosen = value;
                 Set(ref _selected, value, true);
                 MessengerInstance.Send(new AnsweredMessage {Anwsered = value });
             }

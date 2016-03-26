@@ -36,17 +36,19 @@ namespace PsychoTest.Models
             for (int pIdx = 0; pIdx < participants.Count; pIdx++)
             {
                 var participant = participants[pIdx];
-                var proAnswers =
+                var pAnswers =
                     testAnswers.GetAnswersForParticipant(participant)
                         .Where(answer => answer.Question.Type == questionType);
-                foreach (var proAnswer in proAnswers)
+                foreach (var pAnswer in pAnswers)
                 {
-                    questionMatrices
-                        .GetOrAdd(proAnswer.Question.Id, new List<BitArray>())
-                        .GetOrSet(pIdx, new BitArray(testAnswers.Count))
-                        .Set(participants.IndexOf(proAnswer.Answer), true);
-                        
-                    resultMatrix[pIdx, participants.IndexOf(proAnswer.Answer)] += 1;
+                    var bitArray = questionMatrices
+                        .GetOrAdd(pAnswer.Question.Id, new List<BitArray>())
+                        .GetOrSet(pIdx, new BitArray(testAnswers.Count));
+                    foreach (var answer in pAnswer.Answers)
+                    {
+                        bitArray.Set(participants.IndexOf(answer), true);
+                        resultMatrix[pIdx, participants.IndexOf(answer)] += 1;
+                    }
                 }
             }
 
